@@ -1,25 +1,32 @@
 import React, { useState } from "react";
 
+import LoginService from "../../servicios/login/LoginService";
+
 type LoginProps = { };
 
 type LoginState = {
     usuario: string,
-    passwd: string
+    passwd: string,
+    isLoggedIn: boolean
 };
 
 const obtenerEstadoPorDefecto = () : LoginState => {
-    return { usuario: "", passwd: "" };
+    return { usuario: "", passwd: "", isLoggedIn: false };
 };
 
 const obtenerEstadoParaUsuario = (estadoAnterior: LoginState, usuario: string) : LoginState => {
-    return { usuario, passwd: estadoAnterior.passwd };
+    return { usuario, passwd: estadoAnterior.passwd, isLoggedIn: estadoAnterior.isLoggedIn };
 };
 
 const obtenerEstadoParaPasswd = (estadoAnterior: LoginState, passwd: string) : LoginState => {
-    return { usuario: estadoAnterior.usuario, passwd };
+    return { usuario: estadoAnterior.usuario, passwd, isLoggedIn: estadoAnterior.isLoggedIn };
 };
 
-const Login = (props: LoginProps): JSX.Element => {
+const obtenerEstadoParaLoggedIn = (estadoAnterior: LoginState, isLoggedIn: boolean) : LoginState => {
+    return { usuario: estadoAnterior.usuario, passwd: estadoAnterior.passwd, isLoggedIn };
+};
+
+const Login = (_: LoginProps): JSX.Element => {
     const [estado, setEstado] = useState<LoginState>(obtenerEstadoPorDefecto());
 
     const alDigitarUsuario = (evento: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,6 +39,8 @@ const Login = (props: LoginProps): JSX.Element => {
 
     const alAutenticarse = (evento: React.FormEvent<HTMLFormElement>) => {
         evento.preventDefault();
+        const resultadoAutenticacion = LoginService.realizarLogin({ usuario: estado.usuario, passwd: estado.passwd });
+        setEstado(obtenerEstadoParaLoggedIn(estado, resultadoAutenticacion));
     };
 
     return (
