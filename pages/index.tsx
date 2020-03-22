@@ -1,8 +1,10 @@
 import React from "react";
 
+import Login from "../src/componentes/login/Login";
+
 function index() {
     return (
-      <p>Hola Mundo</p>
+      <Login />
     ); 
   }
   
