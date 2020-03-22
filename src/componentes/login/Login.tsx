@@ -43,6 +43,10 @@ const Login = (_: LoginProps): JSX.Element => {
         setEstado(obtenerEstadoParaLoggedIn(estado, resultadoAutenticacion));
     };
 
+    const alSolicitarRegistrarse = () => {
+        (window as any).location = "/registrarse";
+    };
+
     return (
         <>
         <form onSubmit={alAutenticarse}>
@@ -54,7 +58,7 @@ const Login = (_: LoginProps): JSX.Element => {
             <br />
             <input type="submit" value="Autenticarse" />
         </form>
-        <button>Registrarse</button>
+        <button onClick={alSolicitarRegistrarse}>Registrarse</button>
         </>
     );
 };
