@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 
 import { Enfermedad, consultarEnfermedades } from "../../servicios/paciente/PacienteService";
-import { obtenerUsuarioAutenticado } from "../../utils/Utils";
+import Utils from "../../utils/Utils";
 
 type EnfermedadesParams = {};
 
@@ -20,10 +20,8 @@ const Enfermedades = (_:EnfermedadesParams): JSX.Element => {
     const router = useRouter();
 
     useEffect(() => {
-        const usuarioAutenticado = obtenerUsuarioAutenticado();
-        if(!usuarioAutenticado)
-            router.push("/");
-        const enfermedades = consultarEnfermedades(usuarioAutenticado as string);
+        const usuarioAutenticado = Utils.validarUsuarioAutenticado(() => router.push("/"));
+        const enfermedades = consultarEnfermedades(usuarioAutenticado);
         setEstado(obtenerEstadoConEnfermedades(estado, enfermedades));
     }, [querying]);
 

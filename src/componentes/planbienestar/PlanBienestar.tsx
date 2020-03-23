@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 
 import { PlanDeBienestar, consultarPlanesBienestar } from "../../servicios/paciente/PacienteService";
-import { obtenerUsuarioAutenticado } from "../../utils/Utils";
+import Utils from "../../utils/Utils";
 
 type PlanBienestarParams = {};
 
@@ -20,10 +20,8 @@ const PlanBienestar = (_:PlanBienestarParams): JSX.Element => {
     const router = useRouter();
 
     useEffect(() => {
-        const usuarioAutenticado = obtenerUsuarioAutenticado();
-        if(!usuarioAutenticado)
-            router.push("/");
-        const planes = consultarPlanesBienestar(usuarioAutenticado as string);
+        const usuarioAutenticado = Utils.validarUsuarioAutenticado(() => router.push("/"));
+        const planes = consultarPlanesBienestar(usuarioAutenticado);
         setEstado(obtenerEstadoConPlanes(estado, planes));
     }, [querying]);
 
