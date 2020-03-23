@@ -32,6 +32,7 @@ const Registrarse = (_:RegistrarseParams): JSX.Element => {
     const alRegistrarse = (evento: React.FormEvent<HTMLFormElement>): void => {
         evento.preventDefault();
         RegistrarseService.registrarse({ usuario: estado.usuario, passwd: estado.passwd, nombreCompleto: estado.nombreCompleto });
+        router.push("/");
     };
 
     const regresarALogin = (_:React.MouseEvent<HTMLButtonElement>) : void => {
