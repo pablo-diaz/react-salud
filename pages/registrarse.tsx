@@ -1,8 +1,10 @@
 import React from "react";
 
+import Registrarse from "../src/componentes/registrarse/Registrarse";
+
 function registrarse() {
     return (
-        <h1>Registrarse</h1>
+        <Registrarse />
     ); 
 }
     

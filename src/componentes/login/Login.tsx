@@ -29,21 +29,22 @@ const obtenerEstadoParaLoggedIn = (estadoAnterior: LoginState, isLoggedIn: boole
 const Login = (_: LoginProps): JSX.Element => {
     const [estado, setEstado] = useState<LoginState>(obtenerEstadoPorDefecto());
 
-    const alDigitarUsuario = (evento: React.ChangeEvent<HTMLInputElement>) => {
+    const alDigitarUsuario = (evento: React.ChangeEvent<HTMLInputElement>): void => {
         setEstado(obtenerEstadoParaUsuario(estado, evento.target.value));
     };
 
-    const alDigitarPasswd = (evento: React.ChangeEvent<HTMLInputElement>) => {
+    const alDigitarPasswd = (evento: React.ChangeEvent<HTMLInputElement>): void => {
         setEstado(obtenerEstadoParaPasswd(estado, evento.target.value));
     };
 
-    const alAutenticarse = (evento: React.FormEvent<HTMLFormElement>) => {
+    const alAutenticarse = (evento: React.FormEvent<HTMLFormElement>): void => {
         evento.preventDefault();
         const resultadoAutenticacion = LoginService.realizarLogin({ usuario: estado.usuario, passwd: estado.passwd });
         setEstado(obtenerEstadoParaLoggedIn(estado, resultadoAutenticacion));
     };
 
-    const alSolicitarRegistrarse = () => {
+    const alSolicitarRegistrarse = (_:React.MouseEvent<HTMLButtonElement>): void => {
+        // TODO: hacer esta redireccion con la forma de React
         (window as any).location = "/registrarse";
     };
 
