@@ -27,20 +27,14 @@ const obtenerEstadoParaNombreCompleto = (estadoAnterior: RegistrarseState, nombr
 const Registrarse = (_:RegistrarseParams): JSX.Element => {
     const [estado, setEstado] = useState<RegistrarseState>(obtenerEstadoPorDefecto());
 
-    const alDigitarUsuario = (evento: React.ChangeEvent<HTMLInputElement>): void => {
-        setEstado(obtenerEstadoParaUsuario(estado, evento.target.value));
-    };
-
-    const alDigitarPasswd = (evento: React.ChangeEvent<HTMLInputElement>): void => {
-        setEstado(obtenerEstadoParaPasswd(estado, evento.target.value));
-    };
-
-    const alDigitarNombreCompleto = (evento: React.ChangeEvent<HTMLInputElement>): void => {
-        setEstado(obtenerEstadoParaNombreCompleto(estado, evento.target.value));
-    };
-
-    const handleInputChange = (evento: React.ChangeEvent<HTMLInputElement>): void => { 
-
+    const handleInputChange = (evento: React.ChangeEvent<HTMLInputElement>): void => {
+        const funcionesDeCambio = {
+            usuario: obtenerEstadoParaUsuario,
+            passwd: obtenerEstadoParaPasswd,
+            nombreCompleto: obtenerEstadoParaNombreCompleto
+        };
+        const laFunctionDeNuevoEstado = (funcionesDeCambio as any)[evento.target.name];
+        setEstado(laFunctionDeNuevoEstado(estado, evento.target.value));
     };
 
     const alRegistrarse = (evento: React.FormEvent<HTMLFormElement>): void => {
@@ -57,13 +51,13 @@ const Registrarse = (_:RegistrarseParams): JSX.Element => {
         <h1>Registrarse</h1>
         <form onSubmit={alRegistrarse}>
         <label htmlFor="usuario">Usuario: </label>
-            <input type="text" name="usuario" onChange={alDigitarUsuario} placeholder="escriba su usuario aqui" />
+            <input type="text" name="usuario" onChange={handleInputChange} placeholder="escriba su usuario aqui" />
             <br />
             <label htmlFor="passwd">Contraseña: </label>
-            <input type="password" name="passwd" onChange={alDigitarPasswd} placeholder="escriba su contraseña aqui" />
+            <input type="password" name="passwd" onChange={handleInputChange} placeholder="escriba su contraseña aqui" />
             <br />
             <label htmlFor="nombre">Nombre completo: </label>
-            <input type="text" name="nombreCompleto" onChange={alDigitarNombreCompleto} placeholder="escriba su nombre completo aqui" />
+            <input type="text" name="nombreCompleto" onChange={handleInputChange} placeholder="escriba su nombre completo aqui" />
             <br />
             <input type="submit" value="Registrarse" />
         </form>
