@@ -12,29 +12,17 @@ const obtenerEstadoPorDefecto = () : RegistrarseState => {
     return { usuario: "", passwd: "", nombreCompleto: "" };
 };
 
-const obtenerEstadoParaUsuario = (estadoAnterior: RegistrarseState, usuario: string) : RegistrarseState => {
-    return { ...estadoAnterior, usuario };
-};
-
-const obtenerEstadoParaPasswd = (estadoAnterior: RegistrarseState, passwd: string) : RegistrarseState => {
-    return { ...estadoAnterior, passwd };
-};
-
-const obtenerEstadoParaNombreCompleto = (estadoAnterior: RegistrarseState, nombreCompleto: string) : RegistrarseState => {
-    return { ...estadoAnterior, nombreCompleto };
+const obtenerEstadoParaAtributo = (estadoAnterior: RegistrarseState, atributo: string, valorAtributo: any) : RegistrarseState => {
+    const nuevoEstado = { ...estadoAnterior };
+    (nuevoEstado as any)[atributo] = valorAtributo;
+    return nuevoEstado;
 };
 
 const Registrarse = (_:RegistrarseParams): JSX.Element => {
     const [estado, setEstado] = useState<RegistrarseState>(obtenerEstadoPorDefecto());
 
     const handleInputChange = (evento: React.ChangeEvent<HTMLInputElement>): void => {
-        const funcionesDeCambio = {
-            usuario: obtenerEstadoParaUsuario,
-            passwd: obtenerEstadoParaPasswd,
-            nombreCompleto: obtenerEstadoParaNombreCompleto
-        };
-        const laFunctionDeNuevoEstado = (funcionesDeCambio as any)[evento.target.name];
-        setEstado(laFunctionDeNuevoEstado(estado, evento.target.value));
+        setEstado(obtenerEstadoParaAtributo(estado, evento.target.name, (evento.target.value as any)));
     };
 
     const alRegistrarse = (evento: React.FormEvent<HTMLFormElement>): void => {
