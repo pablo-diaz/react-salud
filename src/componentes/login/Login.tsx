@@ -7,24 +7,19 @@ type LoginProps = { };
 
 type LoginState = {
     usuario: string,
-    passwd: string,
-    isLoggedIn: boolean
+    passwd: string
 };
 
 const obtenerEstadoPorDefecto = () : LoginState => {
-    return { usuario: "", passwd: "", isLoggedIn: false };
+    return { usuario: "", passwd: "" };
 };
 
 const obtenerEstadoParaUsuario = (estadoAnterior: LoginState, usuario: string) : LoginState => {
-    return { usuario, passwd: estadoAnterior.passwd, isLoggedIn: estadoAnterior.isLoggedIn };
+    return { ...estadoAnterior, usuario };
 };
 
 const obtenerEstadoParaPasswd = (estadoAnterior: LoginState, passwd: string) : LoginState => {
-    return { usuario: estadoAnterior.usuario, passwd, isLoggedIn: estadoAnterior.isLoggedIn };
-};
-
-const obtenerEstadoParaLoggedIn = (estadoAnterior: LoginState, isLoggedIn: boolean) : LoginState => {
-    return { usuario: estadoAnterior.usuario, passwd: estadoAnterior.passwd, isLoggedIn };
+    return { ...estadoAnterior, passwd };
 };
 
 const Login = (_: LoginProps): JSX.Element => {
@@ -41,8 +36,11 @@ const Login = (_: LoginProps): JSX.Element => {
 
     const alAutenticarse = (evento: React.FormEvent<HTMLFormElement>): void => {
         evento.preventDefault();
-        const resultadoAutenticacion = LoginService.realizarLogin({ usuario: estado.usuario, passwd: estado.passwd });
-        setEstado(obtenerEstadoParaLoggedIn(estado, resultadoAutenticacion));
+        const autenticacionExitosa = LoginService.realizarLogin({ usuario: estado.usuario, passwd: estado.passwd });
+        if(autenticacionExitosa){
+            localStorage.setItem("usuarioAutenticado", estado.usuario);
+            router.push("/menu");
+        }
     };
 
     const alSolicitarRegistrarse = (_:React.MouseEvent<HTMLButtonElement>): void => {
