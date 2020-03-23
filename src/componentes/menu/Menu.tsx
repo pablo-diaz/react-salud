@@ -40,14 +40,20 @@ const Menu = (_:MenuProps): JSX.Element => {
         router.push(`/${paginaARedireccionar}`);
     };
 
+    const hacerLogOut = (evento: React.MouseEvent<HTMLButtonElement>): void => { 
+        localStorage.removeItem("usuarioAutenticado");
+        router.push("/");
+    };
+
     return (
         <>
         <h1>Este es el menu</h1>
-        <h2>Bienvenido</h2>
+        <h2>Bienvenido { estado?.perfil.nombreCompleto }</h2>
         <button name="perfil" onClick={handleClick}>Perfil</button>
         <button name="enfermedades" onClick={handleClick}>Enfermedades</button>
         <button name="consultasmedicas" onClick={handleClick}>Consultas Médicas</button>
         <button name="planbienestar" onClick={handleClick}>Plan de Bienestar</button>
+        <button onClick={hacerLogOut}>Logout</button>
         </>
     );
 };
