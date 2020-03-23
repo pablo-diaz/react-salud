@@ -1,12 +1,14 @@
 import React from "react";
+import { useRouter } from "next/router";
 
 type MenuProps = {};
 
 const Menu = (_:MenuProps): JSX.Element => {
+    const router = useRouter();
+
     const handleClick = (evento: React.MouseEvent<HTMLButtonElement>): void => {
-        // TODO: mejorar la redireccion
         const paginaARedireccionar = (evento.target as HTMLButtonElement).name;
-        (window as any).location = `/${paginaARedireccionar}`;
+        router.push(`/${paginaARedireccionar}`);
     };
 
     return (

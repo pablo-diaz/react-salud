@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 
 import { ConsultaMedica, consultarConsultasMedicas } from "../../servicios/paciente/PacienteService";
 
@@ -15,6 +16,7 @@ const obtenerEstadoConConsultas = (estadoActual: ConsultasMedicasEstado | null, 
 const ConsultasMedicas = (_:ConsultasMedicasParams): JSX.Element => {
     const [estado, setEstado] = useState<ConsultasMedicasEstado | null>(null);
     const [querying, _1] = useState<boolean>(true);
+    const router = useRouter();
 
     useEffect(() => {
         const consultas = consultarConsultasMedicas("pablo");
@@ -22,8 +24,7 @@ const ConsultasMedicas = (_:ConsultasMedicasParams): JSX.Element => {
     }, [querying]);
     
     const regresarAlMenu = (_:React.MouseEvent<HTMLButtonElement>): void => {
-        // TODO: mejorar esta redireccion
-        (window as any).location = "/menu";
+        router.push("/menu");
     };
 
     return (

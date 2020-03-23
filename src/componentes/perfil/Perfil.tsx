@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 
 import { PerfilPaciente, consultarPerfil } from "../../servicios/paciente/PacienteService";
 
@@ -15,6 +16,7 @@ const obtenerEstadoConPerfil = (estadoActual: PerfilEstado | null, perfil: Perfi
 const Perfil = (_:PerfilParams): JSX.Element => {
     const [estado, setEstado] = useState<PerfilEstado | null>(null);
     const [querying, _1] = useState<boolean>(true);
+    const router = useRouter();
 
     useEffect(() => {
         const perfil = consultarPerfil("pablo");
@@ -22,8 +24,7 @@ const Perfil = (_:PerfilParams): JSX.Element => {
     }, [querying]);
 
     const regresarAlMenu = (_:React.MouseEvent<HTMLButtonElement>): void => {
-        // TODO: mejorar esta redireccion
-        (window as any).location = "/menu";
+        router.push("/menu");
     };
 
     return (

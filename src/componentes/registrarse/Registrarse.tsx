@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useRouter } from "next/router";
 
 import RegistrarseService from "../../servicios/registrarse/RegistrarseService";
 
@@ -22,6 +23,7 @@ const obtenerEstadoParaAtributo = (estadoAnterior: RegistrarseState, atributo: s
 
 const Registrarse = (_:RegistrarseParams): JSX.Element => {
     const [estado, setEstado] = useState<RegistrarseState>(obtenerEstadoPorDefecto());
+    const router = useRouter();
 
     const handleInputChange = (evento: React.ChangeEvent<HTMLInputElement>): void => {
         setEstado(obtenerEstadoParaAtributo(estado, evento.target.name, (evento.target.value as any)));
@@ -33,8 +35,7 @@ const Registrarse = (_:RegistrarseParams): JSX.Element => {
     };
 
     const regresarALogin = (_:React.MouseEvent<HTMLButtonElement>) : void => {
-        // TODO: hacer esta redireccion con la forma de React
-        (window as any).location = "/";
+        router.push("/");
     };
 
     return (

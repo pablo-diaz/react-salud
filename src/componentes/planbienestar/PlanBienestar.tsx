@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 
 import { PlanDeBienestar, consultarPlanesBienestar } from "../../servicios/paciente/PacienteService";
 
@@ -15,6 +16,7 @@ const obtenerEstadoConPlanes = (estadoActual: PlanBienestarEstado | null, planes
 const PlanBienestar = (_:PlanBienestarParams): JSX.Element => {
     const [estado, setEstado] = useState<PlanBienestarEstado | null>(null);
     const [querying, _1] = useState<boolean>(true);
+    const router = useRouter();
 
     useEffect(() => {
         const planes = consultarPlanesBienestar("pablo");
@@ -22,8 +24,7 @@ const PlanBienestar = (_:PlanBienestarParams): JSX.Element => {
     }, [querying]);
 
     const regresarAlMenu = (_:React.MouseEvent<HTMLButtonElement>): void => {
-        // TODO: mejorar esta redireccion
-        (window as any).location = "/menu";
+        router.push("/menu");
     };
 
     return (

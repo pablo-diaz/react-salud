@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useRouter } from "next/router";
 
 import LoginService from "../../servicios/login/LoginService";
 
@@ -28,6 +29,7 @@ const obtenerEstadoParaLoggedIn = (estadoAnterior: LoginState, isLoggedIn: boole
 
 const Login = (_: LoginProps): JSX.Element => {
     const [estado, setEstado] = useState<LoginState>(obtenerEstadoPorDefecto());
+    const router = useRouter();
 
     const alDigitarUsuario = (evento: React.ChangeEvent<HTMLInputElement>): void => {
         setEstado(obtenerEstadoParaUsuario(estado, evento.target.value));
@@ -44,8 +46,7 @@ const Login = (_: LoginProps): JSX.Element => {
     };
 
     const alSolicitarRegistrarse = (_:React.MouseEvent<HTMLButtonElement>): void => {
-        // TODO: hacer esta redireccion con la forma de React
-        (window as any).location = "/registrarse";
+        router.push("/registrarse");
     };
 
     return (
