@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 
+import RegistrarseService from "../../servicios/registrarse/RegistrarseService";
+
 type RegistrarseParams = {};
 
 type RegistrarseState = {
@@ -27,6 +29,7 @@ const Registrarse = (_:RegistrarseParams): JSX.Element => {
 
     const alRegistrarse = (evento: React.FormEvent<HTMLFormElement>): void => {
         evento.preventDefault();
+        RegistrarseService.registrarse({ usuario: estado.usuario, passwd: estado.passwd, nombreCompleto: estado.nombreCompleto });
     };
 
     const regresarALogin = (_:React.MouseEvent<HTMLButtonElement>) : void => {
