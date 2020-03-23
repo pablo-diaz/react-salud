@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 
 import { PerfilPaciente, consultarPerfil } from "../../servicios/paciente/PacienteService";
+import { obtenerUsuarioAutenticado } from "../../utils/Utils";
 
 type MenuProps = {};
 
@@ -17,9 +18,6 @@ const Menu = (_:MenuProps): JSX.Element => {
     const [estado, setEstado] = useState<MenuState | null>(null);
     const [querying, _1] = useState<boolean>(true);
     const router = useRouter();
-
-    const obtenerUsuarioAutenticado = (): string | null =>
-        localStorage.getItem("usuarioAutenticado");
 
     const validarUsuarioAutenticado = (): void => {
         const usuario = obtenerUsuarioAutenticado();

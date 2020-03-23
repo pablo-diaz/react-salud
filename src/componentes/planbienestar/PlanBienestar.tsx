@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 
 import { PlanDeBienestar, consultarPlanesBienestar } from "../../servicios/paciente/PacienteService";
+import { obtenerUsuarioAutenticado } from "../../utils/Utils";
 
 type PlanBienestarParams = {};
 
@@ -19,7 +20,10 @@ const PlanBienestar = (_:PlanBienestarParams): JSX.Element => {
     const router = useRouter();
 
     useEffect(() => {
-        const planes = consultarPlanesBienestar("pablo");
+        const usuarioAutenticado = obtenerUsuarioAutenticado();
+        if(!usuarioAutenticado)
+            router.push("/");
+        const planes = consultarPlanesBienestar(usuarioAutenticado as string);
         setEstado(obtenerEstadoConPlanes(estado, planes));
     }, [querying]);
 

@@ -2,8 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 
 import { PerfilPaciente, consultarPerfil } from "../../servicios/paciente/PacienteService";
+import { obtenerUsuarioAutenticado } from "../../utils/Utils";
 
-type PerfilParams = {};
+type PerfilParams = {
+    perfil: PerfilPaciente
+};
 
 type PerfilEstado = {
     info: PerfilPaciente
@@ -19,7 +22,10 @@ const Perfil = (_:PerfilParams): JSX.Element => {
     const router = useRouter();
 
     useEffect(() => {
-        const perfil = consultarPerfil("pablo");
+        const usuarioAutenticado = obtenerUsuarioAutenticado();
+        if(!usuarioAutenticado)
+            router.push("/");
+        const perfil = consultarPerfil(usuarioAutenticado as string);
         setEstado(obtenerEstadoConPerfil(estado, perfil));
     }, [querying]);
 
