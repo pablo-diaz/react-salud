@@ -18,20 +18,23 @@ const obtenerEstadoConPerfil = (estadoActual: PerfilEstado | null, perfil: Perfi
 
 const Perfil = (_:PerfilParams): JSX.Element => {
     const [estado, setEstado] = useState<PerfilEstado | null>(null);
-    const [querying, _1] = useState<boolean>(true);
+    const [cargando, setCargando] = useState<boolean>(true);
     const router = useRouter();
 
     useEffect(() => {
-        const usuarioAutenticado = Utils.validarUsuarioAutenticado(() => router.push("/"));
-        const perfil = consultarPerfil(usuarioAutenticado);
-        setEstado(obtenerEstadoConPerfil(estado, perfil));
-    }, [querying]);
+        Utils.validarUsuarioAutenticado(() => router.push("/"), 
+            usuarioAutenticado => {
+                const perfil = consultarPerfil(usuarioAutenticado);
+                setEstado(obtenerEstadoConPerfil(estado, perfil));
+                setCargando(false);
+        });
+    }, []);
 
     const regresarAlMenu = (_:React.MouseEvent<HTMLButtonElement>): void => {
         router.push("/menu");
     };
 
-    return (
+    return cargando ? <div></div> : (
         <>
         <h1>Este es el Perfil del Paciente</h1>
         <ul>

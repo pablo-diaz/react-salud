@@ -16,18 +16,17 @@ const obtenerEstadoConPerfil = (estadoActual: MenuState | null, perfil: PerfilPa
 
 const Menu = (_:MenuProps): JSX.Element => {
     const [estado, setEstado] = useState<MenuState | null>(null);
-    const [querying, _1] = useState<boolean>(true);
+    const [cargando, setCargando] = useState<boolean>(true);
     const router = useRouter();
 
-    const validarUsuarioAutenticado = (): void => {
-        const usuarioAutenticado = Utils.validarUsuarioAutenticado(() => router.push("/"));
-        const perfil = consultarPerfil(usuarioAutenticado);
-        setEstado(obtenerEstadoConPerfil(estado, perfil));
-    };
-
     useEffect(() => {
-        validarUsuarioAutenticado();
-    }, [querying]);
+        Utils.validarUsuarioAutenticado(() => router.push("/"),
+            usuarioAutenticado => {
+                const perfil = consultarPerfil(usuarioAutenticado);
+                setEstado(obtenerEstadoConPerfil(estado, perfil));
+                setCargando(false);
+        });
+    }, []);
 
     const handleClick = (evento: React.MouseEvent<HTMLButtonElement>): void => {
         const paginaARedireccionar = (evento.target as HTMLButtonElement).name;
@@ -39,7 +38,7 @@ const Menu = (_:MenuProps): JSX.Element => {
         router.push("/");
     };
 
-    return (
+    return cargando ? <div></div> : (
         <>
         <h1>Este es el menu</h1>
         <h2>Bienvenido { estado?.perfil.nombreCompleto }</h2>

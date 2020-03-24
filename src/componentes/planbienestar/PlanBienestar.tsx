@@ -16,20 +16,23 @@ const obtenerEstadoConPlanes = (estadoActual: PlanBienestarEstado | null, planes
 
 const PlanBienestar = (_:PlanBienestarParams): JSX.Element => {
     const [estado, setEstado] = useState<PlanBienestarEstado | null>(null);
-    const [querying, _1] = useState<boolean>(true);
+    const [cargando, setCargando] = useState<boolean>(true);
     const router = useRouter();
 
     useEffect(() => {
-        const usuarioAutenticado = Utils.validarUsuarioAutenticado(() => router.push("/"));
-        const planes = consultarPlanesBienestar(usuarioAutenticado);
-        setEstado(obtenerEstadoConPlanes(estado, planes));
-    }, [querying]);
+        Utils.validarUsuarioAutenticado(() => router.push("/"), 
+            usuarioAutenticado => {
+                const planes = consultarPlanesBienestar(usuarioAutenticado);
+                setEstado(obtenerEstadoConPlanes(estado, planes));
+                setCargando(false);
+            });
+    }, []);
 
     const regresarAlMenu = (_:React.MouseEvent<HTMLButtonElement>): void => {
         router.push("/menu");
     };
 
-    return (
+    return cargando ? <div></div> : (
         <>
         <h1>Estos son los Planes de Bienestar</h1>
         <ul>

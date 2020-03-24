@@ -16,20 +16,23 @@ const obtenerEstadoConEnfermedades = (estadoActual: EnfermedadesEstado | null, e
 
 const Enfermedades = (_:EnfermedadesParams): JSX.Element => {
     const [estado, setEstado] = useState<EnfermedadesEstado | null>(null);
-    const [querying, _1] = useState<boolean>(true);
+    const [cargando, setCargando] = useState<boolean>(true);
     const router = useRouter();
 
     useEffect(() => {
-        const usuarioAutenticado = Utils.validarUsuarioAutenticado(() => router.push("/"));
-        const enfermedades = consultarEnfermedades(usuarioAutenticado);
-        setEstado(obtenerEstadoConEnfermedades(estado, enfermedades));
-    }, [querying]);
+        Utils.validarUsuarioAutenticado(() => router.push("/"),
+        usuarioAutenticado => {
+            const enfermedades = consultarEnfermedades(usuarioAutenticado);
+            setEstado(obtenerEstadoConEnfermedades(estado, enfermedades));
+            setCargando(false);
+        });
+    }, []);
 
     const regresarAlMenu = (_:React.MouseEvent<HTMLButtonElement>): void => {
         router.push("/menu");
     };
 
-    return (
+    return cargando ? <div></div> : (
         <>
         <h1>Estas son las Enfermedades</h1>
         <ul>
