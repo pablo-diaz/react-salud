@@ -1,3 +1,5 @@
+import { ResultadoOperacion, crearResultadoParaExito, crearResultadoParaFalla } from "../../utils/SharedDTOs";
+
 export type PerfilPaciente = {
     nombreCompleto: string,
     edad: number,
@@ -5,6 +7,7 @@ export type PerfilPaciente = {
 };
 
 export type Enfermedad = {
+    id: number,
     nombre: string
 };
 
@@ -25,14 +28,21 @@ export const consultarPerfil = (usuario: string) : PerfilPaciente => {
     return {nombreCompleto: "Pablo Andrés Díaz Patiño", edad: 41, genero: "Masculino"};
 };
 
-export const consultarEnfermedades = (usuario: string) : Enfermedad[] => {
-    console.log("Consulta Enfermedades", usuario);
-    return [
-        { nombre: "Enfermedad 01" },
-        { nombre: "Enfermedad 02" },
-        { nombre: "Enfermedad 03" }
-    ];
+export const consultarEnfermedadesDelPaciente = (usuario: string) : Enfermedad[] => {
+    return [1,3,6].map(id => {
+        return { id, nombre: `Enfermedad 0${id}` }
+    });
 };
+
+export const consultarEnfermedadesDisponibles = () : Enfermedad[] => {
+    return [1,2,3,4,5,6,7,8,9,10].map(id => {
+        return { id, nombre: `Enfermedad 0${id}` }
+    });
+};
+
+export const almacenarEnfermedadesPaciente = (usuario: string, enfermedades: Enfermedad[]): ResultadoOperacion<null> => {
+    return crearResultadoParaExito(null);
+}
 
 export const consultarConsultasMedicas = (usuario: string) : ConsultaMedica[] => {
     console.log("Consulta Consultas Medicas", usuario);
