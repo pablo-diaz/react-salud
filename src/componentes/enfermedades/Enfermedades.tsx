@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import { ToastContainer, toast } from "react-toastify";
 
 import { Enfermedad,
     consultarEnfermedadesDelPaciente, 
@@ -33,6 +34,14 @@ const renderizarEnfermedades = (titulo: string, enfermedades: Enfermedad[] | und
     );
 };
 
+const notificarExito = (): void => {
+    toast.success("Se han almacenado las enfermedades de este paciente exitosamente");
+};
+
+const notificarError = (errores: string[]): void => {
+    errores.forEach(error => toast.error(error));
+};
+
 const Enfermedades = (_:EnfermedadesParams): JSX.Element => {
     const [estado, setEstado] = useState<EnfermedadesEstado | null>(null);
     const [enfermedadesDisponibles, setEnfermedadesDisponibles] = useState<Enfermedad[]>([]);
@@ -63,8 +72,8 @@ const Enfermedades = (_:EnfermedadesParams): JSX.Element => {
 
     const almacenar = (evento: React.MouseEvent<HTMLButtonElement>): void => {
         const resultadoAccion = almacenarEnfermedadesPaciente(estado?.usuario as string, estado?.enfermedadesDelPaciente as Enfermedad[]);
-        if(resultadoAccion.exitosa) console.log("Exitoso !!");
-        else console.log("Error !!");
+        if(resultadoAccion.exitosa) notificarExito();
+        else notificarError(resultadoAccion.errores as string[]);
     };
 
     const regresarAlMenu = (_:React.MouseEvent<HTMLButtonElement>): void => {
@@ -80,6 +89,7 @@ const Enfermedades = (_:EnfermedadesParams): JSX.Element => {
         <button onClick={almacenar}>Almacenar Asignación de Enfermedades</button>
         <br />
         <button onClick={regresarAlMenu}>Regesar al Menu</button>
+        <ToastContainer />
         </>
     );
 };
