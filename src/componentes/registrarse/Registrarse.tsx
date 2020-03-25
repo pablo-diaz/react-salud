@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
+import { ToastContainer, toast, ToastOptions } from "react-toastify";
 
 import RegistrarseService from "../../servicios/registrarse/RegistrarseService";
 
@@ -21,6 +22,16 @@ const obtenerEstadoParaAtributo = (estadoAnterior: RegistrarseState, atributo: s
     return nuevoEstado;
 };
 
+const notificarExito = (callbackOnClose: () => void): void => {
+    toast.success("Se ha agregado exitosamente a la base de datos de usuarios del sistema", {
+        onClose: callbackOnClose
+    });
+};
+
+const notificarError = (errores: string[]): void => {
+    errores.forEach(error => toast.error(error));
+};
+
 const Registrarse = (_:RegistrarseParams): JSX.Element => {
     const [estado, setEstado] = useState<RegistrarseState>(obtenerEstadoPorDefecto());
     const router = useRouter();
@@ -31,8 +42,13 @@ const Registrarse = (_:RegistrarseParams): JSX.Element => {
 
     const alRegistrarse = (evento: React.FormEvent<HTMLFormElement>): void => {
         evento.preventDefault();
-        RegistrarseService.registrarse({ usuario: estado.usuario, passwd: estado.passwd, nombreCompleto: estado.nombreCompleto });
-        router.push("/");
+        const resultadoRegistro = RegistrarseService.registrarse({ usuario: estado.usuario, passwd: estado.passwd, nombreCompleto: estado.nombreCompleto });
+        if(resultadoRegistro.exitosa) {
+            notificarExito(() => router.push("/"));
+        }
+        else {
+            notificarError(resultadoRegistro.errores as string[]);
+        }
     };
 
     const regresarALogin = (_:React.MouseEvent<HTMLButtonElement>) : void => {
@@ -55,6 +71,7 @@ const Registrarse = (_:RegistrarseParams): JSX.Element => {
             <input type="submit" value="Registrarse" />
         </form>
         <button onClick={regresarALogin}>Regresar a Login</button>
+        <ToastContainer />
         </>
     );
 };

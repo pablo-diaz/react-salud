@@ -1,25 +1,14 @@
+import { ResultadoOperacion, crearResultadoParaExito, crearResultadoParaFalla } from "../../utils/SharedDTOs";
+
 type LoginData = {
     usuario: string,
     passwd: string
 };
 
-type LoginResult = {
-    exitosa: boolean,
-    error: string | null
-};
-
-const crearResultadoParaExito = (): LoginResult => {
-    return { exitosa: true, error: null };
-};
-
-const crearResultadoParaFalla = (error: string): LoginResult => {
-    return { exitosa: false, error };
-};
-
-const realizarLogin = (data: LoginData) : LoginResult => {
+const realizarLogin = (data: LoginData) : ResultadoOperacion<null> => {
     if(data.usuario === "pablo" && data.passwd === "nada")
-        return crearResultadoParaExito();
-    return crearResultadoParaFalla("Autenticacion fallida. Intente nuevamente");
+        return crearResultadoParaExito<null>(null);
+    return crearResultadoParaFalla(["Autenticacion fallida. Intente nuevamente"]);
 };
 
 export default {

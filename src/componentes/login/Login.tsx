@@ -24,8 +24,8 @@ const obtenerEstadoParaPasswd = (estadoAnterior: LoginState, passwd: string) : L
     return { ...estadoAnterior, passwd };
 };
 
-const notificarError = (error: string): void => {
-    toast.error(error);
+const notificarError = (errores: string[]): void => {
+    errores.forEach(error => toast.error(error));
 };
 
 const Login = (_: LoginProps): JSX.Element => {
@@ -48,7 +48,7 @@ const Login = (_: LoginProps): JSX.Element => {
             router.push("/menu");
         }
         else {
-            notificarError(resultadoAutenticacion.error as string);
+            notificarError(resultadoAutenticacion.errores as string[]);
         }
     };
 
