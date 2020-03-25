@@ -1,3 +1,6 @@
+const establecerUsuarioAutenticado = (usuario: string): void =>
+    localStorage.setItem("usuarioAutenticado", usuario);
+
 const obtenerUsuarioAutenticadoDesdeLocalStorage = (): string | null =>
     localStorage.getItem("usuarioAutenticado");
 
@@ -9,5 +12,6 @@ const validarUsuarioAutenticado = (usuarioNoAutenticadoCallBack: () => void,
 };
 
 export default {
-    validarUsuarioAutenticado
+    validarUsuarioAutenticado,
+    establecerUsuarioAutenticado
 }

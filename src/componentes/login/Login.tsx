@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
+import { ToastContainer, toast } from "react-toastify";
 
 import LoginService from "../../servicios/login/LoginService";
+import Utils from "../../utils/Utils";
 
 type LoginProps = { };
 
@@ -22,6 +24,10 @@ const obtenerEstadoParaPasswd = (estadoAnterior: LoginState, passwd: string) : L
     return { ...estadoAnterior, passwd };
 };
 
+const notificarError = (error: string): void => {
+    toast.error(error);
+};
+
 const Login = (_: LoginProps): JSX.Element => {
     const [estado, setEstado] = useState<LoginState>(obtenerEstadoPorDefecto());
     const router = useRouter();
@@ -36,10 +42,13 @@ const Login = (_: LoginProps): JSX.Element => {
 
     const alAutenticarse = (evento: React.FormEvent<HTMLFormElement>): void => {
         evento.preventDefault();
-        const autenticacionExitosa = LoginService.realizarLogin({ usuario: estado.usuario, passwd: estado.passwd });
-        if(autenticacionExitosa){
-            localStorage.setItem("usuarioAutenticado", estado.usuario);
+        const resultadoAutenticacion = LoginService.realizarLogin({ usuario: estado.usuario, passwd: estado.passwd });
+        if(resultadoAutenticacion.exitosa){
+            Utils.establecerUsuarioAutenticado(estado.usuario);
             router.push("/menu");
+        }
+        else {
+            notificarError(resultadoAutenticacion.error as string);
         }
     };
 
@@ -59,6 +68,7 @@ const Login = (_: LoginProps): JSX.Element => {
             <input type="submit" value="Autenticarse" />
         </form>
         <button onClick={alSolicitarRegistrarse}>Registrarse</button>
+        <ToastContainer />
         </>
     );
 };
