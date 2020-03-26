@@ -16,11 +16,9 @@ export type ConsultaMedica = {
     fecha: Date
 };
 
-export type PlanDeBienestar = {
+export type Actividad = {
     id: number,
-    nombre: string,
-    descripcion: string,
-    explicacion: string
+    nombre: string
 };
 
 export const consultarPerfil = (usuario: string) : PerfilPaciente => {
@@ -54,14 +52,16 @@ export const consultarConsultasMedicas = (usuario: string) : ConsultaMedica[] =>
     ];
 };
 
-export const consultarPlanesBienestar = (usuario: string) : PlanDeBienestar[] => {
-    console.log("Consulta Planes Bienestar", usuario);
-    return [1, 2, 3, 4, 5].map(id => {
-        return {
-            id,
-            nombre: `Plan 00${id}`,
-            descripcion: `Esta es la descripcion del Plan 00${id}`,
-            explicacion: `Esta es la explicación del Plan 00${id}`
-        } 
+export const consultarActividadesDisponibles = () : Actividad[] => {
+    return [1,2,3,4,5,6,7,8,9,10].map(id => {
+        return { id, nombre: `Actividad 0${id}` }
     });
+};
+
+export const evaluarActividadesContraEnfermedades = (actividades: Actividad[]): ResultadoOperacion<Enfermedad[]> => {
+    if(!actividades || actividades.length === 0)
+        return crearResultadoParaFalla(["No se han seleccionado actividades aun"]);
+    return crearResultadoParaExito<Enfermedad[]>([1,3,6].map(id => {
+        return { id, nombre: `Enfermedad 0${id}` }
+    }));
 };
