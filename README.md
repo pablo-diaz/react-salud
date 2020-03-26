@@ -1,6 +1,7 @@
-*** Aplicativo de Salud
+# Aplicativo de Salud
 
-** Taller de React 2020
+## Taller de React 2020
 
-Para ejecutarlo:
+Para ejecutar el Frontend:
 - npm run dev
+
