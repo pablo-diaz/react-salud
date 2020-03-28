@@ -22,19 +22,20 @@ const Perfil = (_:PerfilParams): JSX.Element => {
     const router = useRouter();
 
     useEffect(() => {
-        Utils.validarUsuarioAutenticado(() => router.push("/"), 
-            usuarioAutenticado => {
-                const perfil = consultarPerfil(usuarioAutenticado);
+        Utils.validarUsuarioAutenticado()
+            .then(usuarioAutenticado => consultarPerfil(usuarioAutenticado))
+            .then(perfil => {
                 setEstado(obtenerEstadoConPerfil(estado, perfil));
                 setCargando(false);
-        });
+            })
+            .catch(() => router.push("/"));
     }, []);
 
     const regresarAlMenu = (_:React.MouseEvent<HTMLButtonElement>): void => {
         router.push("/menu");
     };
 
-    return cargando ? <div></div> : (
+    return cargando ? <div>Cargando ....</div> : (
         <>
         <h1>Este es el Perfil del Paciente</h1>
         <ul>

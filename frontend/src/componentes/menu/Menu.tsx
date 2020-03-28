@@ -20,12 +20,13 @@ const Menu = (_:MenuProps): JSX.Element => {
     const router = useRouter();
 
     useEffect(() => {
-        Utils.validarUsuarioAutenticado(() => router.push("/"),
-            usuarioAutenticado => {
-                const perfil = consultarPerfil(usuarioAutenticado);
-                setEstado(obtenerEstadoConPerfil(estado, perfil));
-                setCargando(false);
-        });
+        Utils.validarUsuarioAutenticado()
+        .then(usuarioAutenticado => consultarPerfil(usuarioAutenticado))
+        .then(perfil => {
+            setEstado(obtenerEstadoConPerfil(estado, perfil));
+            setCargando(false);
+        })
+        .catch(() => router.push("/"));
     }, []);
 
     const handleClick = (evento: React.MouseEvent<HTMLButtonElement>): void => {
@@ -38,7 +39,7 @@ const Menu = (_:MenuProps): JSX.Element => {
         router.push("/");
     };
 
-    return cargando ? <div></div> : (
+    return cargando ? <div>Cargando ....</div> : (
         <>
         <h1>Este es el menu</h1>
         <h2>Bienvenido { estado?.perfil.nombreCompleto }</h2>

@@ -61,13 +61,14 @@ const PlanBienestar = (_:PlanBienestarParams): JSX.Element => {
     const router = useRouter();
 
     useEffect(() => {
-        Utils.validarUsuarioAutenticado(() => router.push("/"), 
-            _ => {
-                const actividades = consultarActividadesDisponibles();
-                setEstado(obtenerEstadoConActividades(estado, [], actividades));
-                setActividadesDisponibles(actividades);
-                setCargando(false);
-            });
+        Utils.validarUsuarioAutenticado()
+        .then(_ => consultarActividadesDisponibles())
+        .then(actividades => {
+            setEstado(obtenerEstadoConActividades(estado, [], actividades));
+            setActividadesDisponibles(actividades);
+            setCargando(false);
+        })
+        .catch(() => router.push("/"));
     }, []);
 
     const quitarActividadDePaciente = (idActividad: number): void => {
@@ -84,19 +85,23 @@ const PlanBienestar = (_:PlanBienestarParams): JSX.Element => {
     };
 
     const alEvaluarActividades = (evento: React.MouseEvent<HTMLButtonElement>): void => {
-        const resultadoEvaluacion = evaluarActividadesContraEnfermedades(estado.actividadesPaciente);
-        if(resultadoEvaluacion.exitosa) setEnfermedades(resultadoEvaluacion.extraData as Enfermedad[]);
-        else {
-            notificarError(resultadoEvaluacion.errores as string[]);
-            setEnfermedades([]);
-        }
+        evaluarActividadesContraEnfermedades(estado.actividadesPaciente)
+        .then(resultadoEvaluacion => {
+            if(resultadoEvaluacion.exitosa)
+                setEnfermedades(resultadoEvaluacion.extraData as Enfermedad[]);
+            else {
+                notificarError(resultadoEvaluacion.errores as string[]);
+                setEnfermedades([]);
+            }
+        })
+        .catch(razon => notificarError([razon]));
     };
 
     const regresarAlMenu = (_:React.MouseEvent<HTMLButtonElement>): void => {
         router.push("/menu");
     };
 
-    return cargando ? <div></div> : (
+    return cargando ? <div>Cargando ...</div> : (
         <>
         { renderizarActividades("Actividades seleccionadas para el Paciente", estado.actividadesPaciente, quitarActividadDePaciente) }
         <br />

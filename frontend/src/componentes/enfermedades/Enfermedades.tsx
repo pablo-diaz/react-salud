@@ -49,14 +49,17 @@ const Enfermedades = (_:EnfermedadesParams): JSX.Element => {
     const router = useRouter();
 
     useEffect(() => {
-        Utils.validarUsuarioAutenticado(() => router.push("/"),
-            usuarioAutenticado => {
-                const delPaciente = consultarEnfermedadesDelPaciente(usuarioAutenticado);
-                const habilitadas = consultarEnfermedadesDisponibles();
-                setEstado(obtenerEstadoConEnfermedades(estado, usuarioAutenticado, delPaciente, habilitadas));
-                setEnfermedadesDisponibles(habilitadas);
-                setCargando(false);
-        });
+        Utils.validarUsuarioAutenticado()
+        .then(usuarioAutenticado => Promise.all([
+            usuarioAutenticado, 
+            consultarEnfermedadesDelPaciente(usuarioAutenticado), 
+            consultarEnfermedadesDisponibles()]))
+        .then(([usuarioAutenticado, delPaciente, habilitadas]) => {
+            setEstado(obtenerEstadoConEnfermedades(estado, usuarioAutenticado, delPaciente, habilitadas));
+            setEnfermedadesDisponibles(habilitadas);
+            setCargando(false);
+        })
+        .catch(() => router.push("/"));
     }, []);
 
     const quitarEnfermedadDePaciente = (idEnfermedad: number): void => {
@@ -71,16 +74,16 @@ const Enfermedades = (_:EnfermedadesParams): JSX.Element => {
     };
 
     const almacenar = (evento: React.MouseEvent<HTMLButtonElement>): void => {
-        const resultadoAccion = almacenarEnfermedadesPaciente(estado?.usuario as string, estado?.enfermedadesDelPaciente as Enfermedad[]);
-        if(resultadoAccion.exitosa) notificarExito();
-        else notificarError(resultadoAccion.errores as string[]);
+        almacenarEnfermedadesPaciente(estado?.usuario as string, estado?.enfermedadesDelPaciente as Enfermedad[])
+        .then(_ => { notificarExito(); })
+        .catch(razon => { notificarError([razon]); });
     };
 
     const regresarAlMenu = (_:React.MouseEvent<HTMLButtonElement>): void => {
         router.push("/menu");
     };
 
-    return cargando ? <div></div> : (
+    return cargando ? <div>Cargando ...</div> : (
         <>
         { renderizarEnfermedades("Estas son las Enfermedades del Paciente", estado?.enfermedadesDelPaciente, quitarEnfermedadDePaciente) }
         <br />

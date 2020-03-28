@@ -20,19 +20,20 @@ const ConsultasMedicas = (_:ConsultasMedicasParams): JSX.Element => {
     const router = useRouter();
 
     useEffect(() => {
-        Utils.validarUsuarioAutenticado(() => router.push("/"), 
-            usuarioAutenticado => {
-                const consultas = consultarConsultasMedicas(usuarioAutenticado);
-                setEstado(obtenerEstadoConConsultas(estado, consultas));
-                setCargando(false);
-            });
+        Utils.validarUsuarioAutenticado()
+        .then(usuarioAutenticado => consultarConsultasMedicas(usuarioAutenticado))
+        .then(consultas => {
+            setEstado(obtenerEstadoConConsultas(estado, consultas));
+            setCargando(false);
+        })
+        .catch(() => router.push("/"));
     }, []);
     
     const regresarAlMenu = (_:React.MouseEvent<HTMLButtonElement>): void => {
         router.push("/menu");
     };
 
-    return cargando ? <div></div> : (
+    return cargando ? <div>Cargando ...</div> : (
         <>
         <h1>Estas son las Consultas Médicas</h1>
         <ul>

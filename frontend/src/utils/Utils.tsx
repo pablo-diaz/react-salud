@@ -4,12 +4,12 @@ const establecerUsuarioAutenticado = (usuario: string): void =>
 const obtenerUsuarioAutenticadoDesdeLocalStorage = (): string | null =>
     localStorage.getItem("usuarioAutenticado");
 
-const validarUsuarioAutenticado = (usuarioNoAutenticadoCallBack: () => void, 
-        usuarioAutenticadoCallBack: (usuarioAutenticado: string) => void) : void => {
-    const usuarioAutenticado = obtenerUsuarioAutenticadoDesdeLocalStorage();
-    if(!usuarioAutenticado) usuarioNoAutenticadoCallBack();
-    else usuarioAutenticadoCallBack(usuarioAutenticado as string);
-};
+const validarUsuarioAutenticado = (): Promise<string> => 
+    new Promise((exito: (usuario: string) => void, fallo: () => void) => {
+        const usuarioAutenticado = obtenerUsuarioAutenticadoDesdeLocalStorage();
+        if(usuarioAutenticado) exito(usuarioAutenticado);
+        else fallo();
+    });
 
 export default {
     validarUsuarioAutenticado,
