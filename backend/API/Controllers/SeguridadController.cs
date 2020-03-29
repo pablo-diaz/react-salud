@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -11,7 +12,6 @@ using Microsoft.Extensions.Configuration;
 using API.Infrastructure.Helpers;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
-using System;
 
 namespace API.Controllers
 {
@@ -30,14 +30,13 @@ namespace API.Controllers
             _configuration = configuration;
         }
 
-
         [HttpPost("autenticarse")]
         public async Task<IActionResult> AutenticarUsuario([FromBody] InfoAutenticacion info)
         {
             await Task.Delay(1000);
             var usuarioDeDBResult = await _seguridadService.Autenticar(info.Usuario, info.Passwd);
             if (usuarioDeDBResult.IsFailure)
-                return Unauthorized();
+                return Forbid();
 
             var usuarioDeDB = usuarioDeDBResult.Value;
             usuarioDeDB.TokenDeSeguridad = ObtenerJWTToken(usuarioDeDB.Id);
@@ -56,9 +55,9 @@ namespace API.Controllers
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim("nombre", idUsuario.ToString())
+                    new Claim("UserId", idUsuario.ToString())
                 }),
-                Expires = DateTime.UtcNow.AddDays(7),
+                Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);

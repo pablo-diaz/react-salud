@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
@@ -8,6 +9,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
 
 using API.DTOs;
+using CSharpFunctionalExtensions;
+using API.Servicios;
 
 namespace API.Controllers
 {
@@ -17,17 +20,34 @@ namespace API.Controllers
     public class PacienteController : ControllerBase
     {
         private readonly ILogger<PacienteController> _logger;
+        private readonly IPacienteService _pacienteService;
 
-        public PacienteController(ILogger<PacienteController> logger)
+        public PacienteController(ILogger<PacienteController> logger, IPacienteService pacienteService)
         {
             _logger = logger;
+            this._pacienteService = pacienteService;
+        }
+
+        private Maybe<int> ObtenerIdUsuarioSolicitante()
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            return identity != null
+                ? Convert.ToInt32(identity.FindFirst("UserId").Value)
+                : Maybe<int>.None;
         }
 
         [HttpGet("perfil")]
-        public async Task<Perfil> ObtenerPerfil()
+        public async Task<IActionResult> ObtenerPerfil()
         { 
-            await Task.Delay(1000);
-            return new Perfil { NombreCompleto = "Pablo Andrés Díaz Patiño", Edad = 41, Genero = "Masculino" };
+            var maybeUserId = ObtenerIdUsuarioSolicitante();
+            if (!maybeUserId.HasValue)
+                return BadRequest();
+
+            var maybePerfil = await this._pacienteService.ObtenerPerfil(maybeUserId.Value);
+            if (maybePerfil.HasNoValue)
+                return NotFound("Perfil no existe");
+
+            return Ok(maybePerfil.Value);
         }
 
         [HttpGet("enfermedadesDisponibles")]

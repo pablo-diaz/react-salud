@@ -21,7 +21,7 @@ const Menu = (_:MenuProps): JSX.Element => {
 
     useEffect(() => {
         Utils.validarUsuarioAutenticado()
-        .then(usuarioAutenticado => consultarPerfil(usuarioAutenticado))
+        .then(token => consultarPerfil(token))
         .then(perfil => {
             setEstado(obtenerEstadoConPerfil(estado, perfil));
             setCargando(false);
@@ -35,7 +35,7 @@ const Menu = (_:MenuProps): JSX.Element => {
     };
 
     const hacerLogOut = (evento: React.MouseEvent<HTMLButtonElement>): void => { 
-        localStorage.removeItem("usuarioAutenticado");
+        Utils.borrarUsuarioDesdeStorage();
         router.push("/");
     };
 

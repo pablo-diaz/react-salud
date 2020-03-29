@@ -21,7 +21,7 @@ const ConsultasMedicas = (_:ConsultasMedicasParams): JSX.Element => {
 
     useEffect(() => {
         Utils.validarUsuarioAutenticado()
-        .then(usuarioAutenticado => consultarConsultasMedicas(usuarioAutenticado))
+        .then(token => consultarConsultasMedicas(token))
         .then(consultas => {
             setEstado(obtenerEstadoConConsultas(estado, consultas));
             setCargando(false);

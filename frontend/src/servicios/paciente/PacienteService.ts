@@ -23,47 +23,54 @@ export type Actividad = {
     nombre: string
 };
 
-export const consultarPerfil = async (usuario: string) : Promise<PerfilPaciente> => {
+export const consultarPerfil = async (token: string) : Promise<PerfilPaciente> => {
+    const headers = { 'Authorization': `Bearer ${token}` }
     const url = `https://localhost:5001/paciente/perfil`;
-    const { data } = await axios.get<PerfilPaciente>(url);
+    const { data } = await axios.get<PerfilPaciente>(url, { headers });
     return data;
 };
 
-export const consultarEnfermedadesDelPaciente = async (usuario: string) : Promise<Enfermedad[]> => {
+export const consultarEnfermedadesDelPaciente = async (token: string) : Promise<Enfermedad[]> => {
+    const headers = { 'Authorization': `Bearer ${token}` }
     const url = `https://localhost:5001/paciente/enfermedades`;
-    const { data } = await axios.get<Enfermedad[]>(url);
+    const { data } = await axios.get<Enfermedad[]>(url, { headers });
     return data;
 };
 
-export const consultarEnfermedadesDisponibles = async () : Promise<Enfermedad[]> => {
+export const consultarEnfermedadesDisponibles = async (token: string) : Promise<Enfermedad[]> => {
+    const headers = { 'Authorization': `Bearer ${token}` }
     const url = `https://localhost:5001/paciente/enfermedadesDisponibles`;
-    const { data } = await axios.get<Enfermedad[]>(url);
+    const { data } = await axios.get<Enfermedad[]>(url, { headers });
     return data;
 };
 
-export const almacenarEnfermedadesPaciente = async (usuario: string, enfermedades: Enfermedad[]): Promise<string> => {
+export const almacenarEnfermedadesPaciente = async (token: string, enfermedades: Enfermedad[]): Promise<string> => {
+    const headers = { 'Authorization': `Bearer ${token}` }
     const url = `https://localhost:5001/paciente/enfermedades`;
-    const { data } = await axios.post<string>(url, enfermedades);
+    const { data } = await axios.post<string>(url, enfermedades, { headers });
     return data;
 }
 
-export const consultarConsultasMedicas = async (usuario: string) : Promise<ConsultaMedica[]> => {
+export const consultarConsultasMedicas = async (token: string) : Promise<ConsultaMedica[]> => {
+    const headers = { 'Authorization': `Bearer ${token}` }
     const url = `https://localhost:5001/paciente/citasMedicas`;
-    const { data } = await axios.get<ConsultaMedica[]>(url);
+    const { data } = await axios.get<ConsultaMedica[]>(url, { headers });
     return data;
 };
 
-export const consultarActividadesDisponibles = async () : Promise<Actividad[]> => {
+export const consultarActividadesDisponibles = async (token: string) : Promise<Actividad[]> => {
+    const headers = { 'Authorization': `Bearer ${token}` }
     const url = `https://localhost:5001/paciente/actividadesDisponibles`;
-    const { data } = await axios.get<Actividad[]>(url);
+    const { data } = await axios.get<Actividad[]>(url, { headers });
     return data;
 };
 
-export const evaluarActividadesContraEnfermedades = async (actividades: Actividad[]): Promise<ResultadoOperacion<Enfermedad[]>> => {
+export const evaluarActividadesContraEnfermedades = async (token: string, actividades: Actividad[]): Promise<ResultadoOperacion<Enfermedad[]>> => {
     if(!actividades || actividades.length === 0)
         return crearResultadoParaFalla(["No se han seleccionado actividades aun"]);
     
+    const headers = { 'Authorization': `Bearer ${token}` }
     const url = `https://localhost:5001/paciente/evaluarActividadesContraEnfermedades`;
-    const { data } = await axios.post<Enfermedad[]>(url, actividades);
+    const { data } = await axios.post<Enfermedad[]>(url, actividades, { headers });
     return crearResultadoParaExito(data);
 };

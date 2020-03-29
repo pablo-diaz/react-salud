@@ -62,7 +62,7 @@ const PlanBienestar = (_:PlanBienestarParams): JSX.Element => {
 
     useEffect(() => {
         Utils.validarUsuarioAutenticado()
-        .then(_ => consultarActividadesDisponibles())
+        .then(token => consultarActividadesDisponibles(token))
         .then(actividades => {
             setEstado(obtenerEstadoConActividades(estado, [], actividades));
             setActividadesDisponibles(actividades);
@@ -85,7 +85,8 @@ const PlanBienestar = (_:PlanBienestarParams): JSX.Element => {
     };
 
     const alEvaluarActividades = (evento: React.MouseEvent<HTMLButtonElement>): void => {
-        evaluarActividadesContraEnfermedades(estado.actividadesPaciente)
+        Utils.validarUsuarioAutenticado()
+        .then(token => evaluarActividadesContraEnfermedades(token, estado.actividadesPaciente))
         .then(resultadoEvaluacion => {
             if(resultadoEvaluacion.exitosa)
                 setEnfermedades(resultadoEvaluacion.extraData as Enfermedad[]);

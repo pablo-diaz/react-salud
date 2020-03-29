@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 using API.Infrastructure.Helpers;
 using API.Servicios;
+using API.Repositorios;
 
 namespace API
 {
@@ -88,7 +89,11 @@ namespace API
 
         private void ConfigurarInyeccionDeServicios(IServiceCollection services)
         {
-            services.AddScoped<ISeguridadService, InMemorySeguridadService>();
+            services.AddScoped<ISeguridadService, SeguridadService>();
+            services.AddScoped<IPacienteService, PacienteService>();
+
+            services.AddScoped<IRepoUsuario, InMemoryRepoUsuario>();
+            services.AddScoped<IRepoPaciente, InMemoryRepoPaciente>();
         }
     }
 }

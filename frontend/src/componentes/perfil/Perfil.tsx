@@ -23,7 +23,7 @@ const Perfil = (_:PerfilParams): JSX.Element => {
 
     useEffect(() => {
         Utils.validarUsuarioAutenticado()
-            .then(usuarioAutenticado => consultarPerfil(usuarioAutenticado))
+            .then(token => consultarPerfil(token))
             .then(perfil => {
                 setEstado(obtenerEstadoConPerfil(estado, perfil));
                 setCargando(false);

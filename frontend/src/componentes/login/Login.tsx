@@ -42,14 +42,22 @@ const Login = (_: LoginProps): JSX.Element => {
 
     const alAutenticarse = (evento: React.FormEvent<HTMLFormElement>): void => {
         evento.preventDefault();
-        const resultadoAutenticacion = LoginService.realizarLogin({ usuario: estado.usuario, passwd: estado.passwd });
-        if(resultadoAutenticacion.exitosa){
-            Utils.establecerUsuarioAutenticado(estado.usuario);
-            router.push("/menu");
-        }
-        else {
-            notificarError(resultadoAutenticacion.errores as string[]);
-        }
+        LoginService.realizarLogin({ usuario: estado.usuario, passwd: estado.passwd })
+        .then(resultadoAutenticacion => {
+            if(resultadoAutenticacion.exitosa) {
+                Utils.establecerUsuarioAutenticado(resultadoAutenticacion.extraData as string);
+                router.push("/menu");
+            }
+            else
+            {
+                Utils.borrarUsuarioDesdeStorage();
+                notificarError(resultadoAutenticacion.errores as string[]);
+            }
+        })
+        .catch(razon => {
+            Utils.borrarUsuarioDesdeStorage();
+            notificarError([razon]);
+        });
     };
 
     const alSolicitarRegistrarse = (_:React.MouseEvent<HTMLButtonElement>): void => {

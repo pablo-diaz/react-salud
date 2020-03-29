@@ -50,10 +50,10 @@ const Enfermedades = (_:EnfermedadesParams): JSX.Element => {
 
     useEffect(() => {
         Utils.validarUsuarioAutenticado()
-        .then(usuarioAutenticado => Promise.all([
-            usuarioAutenticado, 
-            consultarEnfermedadesDelPaciente(usuarioAutenticado), 
-            consultarEnfermedadesDisponibles()]))
+        .then(token => Promise.all([
+            token, 
+            consultarEnfermedadesDelPaciente(token), 
+            consultarEnfermedadesDisponibles(token)]))
         .then(([usuarioAutenticado, delPaciente, habilitadas]) => {
             setEstado(obtenerEstadoConEnfermedades(estado, usuarioAutenticado, delPaciente, habilitadas));
             setEnfermedadesDisponibles(habilitadas);
@@ -74,7 +74,8 @@ const Enfermedades = (_:EnfermedadesParams): JSX.Element => {
     };
 
     const almacenar = (evento: React.MouseEvent<HTMLButtonElement>): void => {
-        almacenarEnfermedadesPaciente(estado?.usuario as string, estado?.enfermedadesDelPaciente as Enfermedad[])
+        Utils.validarUsuarioAutenticado()
+        .then(token => almacenarEnfermedadesPaciente(token, estado?.enfermedadesDelPaciente as Enfermedad[]))
         .then(_ => { notificarExito(); })
         .catch(razon => { notificarError([razon]); });
     };
