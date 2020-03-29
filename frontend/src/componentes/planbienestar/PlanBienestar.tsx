@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+
 import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+
+import Grid from '@material-ui/core/Grid';
+import Button from '@material-ui/core/Button';
 
 import { Actividad,
     consultarActividadesDisponibles,
@@ -104,15 +109,19 @@ const PlanBienestar = (_:PlanBienestarParams): JSX.Element => {
 
     return cargando ? <div>Cargando ...</div> : (
         <>
-        { renderizarActividades("Actividades seleccionadas para el Paciente", estado.actividadesPaciente, quitarActividadDePaciente) }
-        <br />
-        <button onClick={alEvaluarActividades}>Evaluar Actividades</button>
-        <br />
-        { renderizarEnfermedades("La siguientes son las posibles enfermedades, según las anteriores actividades", enfermedades) }
-        <br />
-        { renderizarActividades("Actividades disponibles para seleccionar", estado.actividadesDisponibles, agregarActividadPaciente) }
-        <br />
-        <button onClick={regresarAlMenu}>Regesar al Menu</button>
+        <Grid container>
+            <Grid item>
+                { renderizarActividades("Actividades seleccionadas para el Paciente", estado.actividadesPaciente, quitarActividadDePaciente) }
+                <br />
+                <Button onClick={alEvaluarActividades} variant="contained" color="primary">Evaluar Actividades</Button>
+                <br />
+                { renderizarEnfermedades("La siguientes son las posibles enfermedades, según las anteriores actividades", enfermedades) }
+                <br />
+                { renderizarActividades("Actividades disponibles para seleccionar", estado.actividadesDisponibles, agregarActividadPaciente) }
+                <br />
+                <Button onClick={regresarAlMenu} variant="contained" color="secondary">Regesar al Menú</Button>
+            </Grid>
+        </Grid>
         <ToastContainer />
         </>
     );

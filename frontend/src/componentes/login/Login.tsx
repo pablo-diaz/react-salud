@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useRouter } from "next/router";
 
 import { ToastContainer, toast } from "react-toastify";
@@ -6,7 +6,9 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import Grid from '@material-ui/core/Grid';
 
+import './login.css';
 import LoginService from "../../servicios/login/LoginService";
 import Utils from "../../utils/Utils";
 
@@ -35,6 +37,7 @@ const notificarError = (errores: string[]): void => {
 
 const Login = (_: LoginProps): JSX.Element => {
     const [estado, setEstado] = useState<LoginState>(obtenerEstadoPorDefecto());
+    const submitRef = useRef(null);
     const router = useRouter();
 
     const alDigitarUsuario = (evento: React.ChangeEvent<HTMLInputElement>): void => {
@@ -66,7 +69,7 @@ const Login = (_: LoginProps): JSX.Element => {
 
     const alAutenticarse = (evento: React.MouseEvent<HTMLButtonElement>): void => {
         evento.preventDefault();
-        autenticarUsuario();
+        (submitRef.current as any).click();
     };
 
     const alHacerSubmit = (evento: React.FormEvent<HTMLFormElement>): void => {
@@ -80,15 +83,20 @@ const Login = (_: LoginProps): JSX.Element => {
 
     return (
         <>
-        <form onSubmit={alHacerSubmit} autoComplete="off">
-            <TextField type="text" onChange={alDigitarUsuario} placeholder="escriba su usuario aqui" label="Usuario" required={true} />
-            <br /><br />
-            <TextField type="password" onChange={alDigitarPasswd} placeholder="escriba su contraseña aqui" label="Contraseña" required={true} />
-            <br /><br />
-            <input type="submit" value="Listo" style={{ visibility: "hidden" }} />
-        </form>
-        <Button onClick={alAutenticarse} variant="contained">Autenticarse</Button>
-        <Button onClick={alSolicitarRegistrarse} variant="contained">Registrarse</Button>
+        <Grid container alignItems="center" justify="center">
+            <Grid item>
+                <form onSubmit={alHacerSubmit} autoComplete="off">
+                    <TextField type="text" onChange={alDigitarUsuario} placeholder="escriba su usuario aqui" label="Usuario" required={true} />
+                    <br /><br />
+                    <TextField type="password" onChange={alDigitarPasswd} placeholder="escriba su contraseña aqui" label="Contraseña" required={true} />
+                    <br /><br />
+                    <input type="submit" value="Listo" style={{ visibility: "hidden" }} ref={submitRef} />
+                </form>
+                <Button onClick={alAutenticarse} variant="contained" color="primary">Autenticarse</Button>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <Button onClick={alSolicitarRegistrarse} variant="contained">Registrarse</Button>
+            </Grid>
+        </Grid>
         <ToastContainer />
         </>
     );

@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 
+import Grid from '@material-ui/core/Grid';
+import Button from '@material-ui/core/Button';
+import TableContainer from '@material-ui/core/TableContainer';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableRow from '@material-ui/core/TableRow';
+import TableCell from '@material-ui/core/TableCell';
+
 import { PerfilPaciente, consultarPerfil } from "../../servicios/paciente/PacienteService";
 import Utils from "../../utils/Utils";
 
@@ -36,16 +44,31 @@ const Perfil = (_:PerfilParams): JSX.Element => {
     };
 
     return cargando ? <div>Cargando ....</div> : (
-        <>
-        <h1>Este es el Perfil del Paciente</h1>
-        <ul>
-            <li>Nombre: {estado?.info.nombreCompleto}</li>
-            <li>Edad: {estado?.info.edad}</li>
-            <li>Género: {estado?.info.genero}</li>
-        </ul>
-        <br />
-        <button onClick={regresarAlMenu}>Regesar al Menu</button>
-        </>
+        <Grid container justify="center">
+            <Grid item>
+                <h1>Perfil del Paciente</h1>
+                <TableContainer>
+                    <Table>
+                        <TableBody>
+                            <TableRow key={1}>
+                                <TableCell>Nombre</TableCell>
+                                <TableCell>{estado?.info.nombreCompleto}</TableCell>
+                            </TableRow>
+                            <TableRow key={2}>
+                                <TableCell>Edad</TableCell>
+                                <TableCell>{estado?.info.edad}</TableCell>
+                            </TableRow>
+                            <TableRow key={3}>
+                                <TableCell>Género</TableCell>
+                                <TableCell>{estado?.info.genero}</TableCell>
+                            </TableRow>
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                <br />
+                <Button onClick={regresarAlMenu} variant="contained" color="primary">Regesar al Menú</Button>
+            </Grid>
+        </Grid>
     );
 };
 

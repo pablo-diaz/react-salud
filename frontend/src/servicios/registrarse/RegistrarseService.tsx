@@ -16,6 +16,8 @@ const obtenerErroresDeValidacion = (data: RegistrarseData): string[] => {
     if(!data.nombreCompleto || data.nombreCompleto.length <= 3) errores.push("Escribe tu Nombre");
     if(!data.usuario || data.usuario.length <= 3) errores.push("Escribe tu Usuario");
     if(!data.passwd || data.passwd.length <= 3) errores.push("Escribe tu Password");
+    if(!data.genero || data.genero.length <= 3) errores.push("Escribe tu Género");
+    if(data.edad <= 0) errores.push("Escribe una Edad válida");
     return errores;
 };
 
@@ -25,12 +27,15 @@ const registrarse = async (dataRegistro: RegistrarseData) : Promise<ResultadoOpe
         return crearResultadoParaFalla(erroresDeValidacion);
     
     const url = `https://localhost:5001/seguridad/agregarUsuario`;
+    let posibleError: string = "";
 
     try {
-        await axios.post<string>(url, dataRegistro);
+        await axios.post<string>(url, dataRegistro, { transformResponse: data => posibleError = data });
         return crearResultadoParaExito(null);
     }
     catch(exception) {
+        if(posibleError.length > 0)
+            return crearResultadoParaFalla([posibleError]);
         if(exception instanceof Error)
             return crearResultadoParaFalla([exception.message]);
     }

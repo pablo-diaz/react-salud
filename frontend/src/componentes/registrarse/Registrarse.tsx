@@ -1,6 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useRouter } from "next/router";
+
 import { ToastContainer, toast, ToastOptions } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import Grid from '@material-ui/core/Grid';
 
 import RegistrarseService from "../../servicios/registrarse/RegistrarseService";
 
@@ -36,14 +42,14 @@ const notificarError = (errores: string[]): void => {
 
 const Registrarse = (_:RegistrarseParams): JSX.Element => {
     const [estado, setEstado] = useState<RegistrarseState>(obtenerEstadoPorDefecto());
+    const submitRef = useRef(null);
     const router = useRouter();
 
     const handleInputChange = (evento: React.ChangeEvent<HTMLInputElement>): void => {
         setEstado(obtenerEstadoParaAtributo(estado, evento.target.name, (evento.target.value as any)));
     };
 
-    const alRegistrarse = (evento: React.FormEvent<HTMLFormElement>): void => {
-        evento.preventDefault();
+    const registrarse = (): void => {
         RegistrarseService.registrarse({ usuario: estado.usuario, passwd: estado.passwd, nombreCompleto: estado.nombreCompleto, edad: parseInt(estado.edad), genero: estado.genero })
         .then(resultadoRegistro => {
             if(resultadoRegistro.exitosa) {
@@ -56,32 +62,43 @@ const Registrarse = (_:RegistrarseParams): JSX.Element => {
         .catch(razon => notificarError([razon]));
     };
 
+    const alRegistrarse = (evento: React.FormEvent<HTMLFormElement>): void => {
+        evento.preventDefault();
+        registrarse();
+    };
+
+    const alPresionarRegistrarse = (evento: React.MouseEvent<HTMLButtonElement>): void => {
+        evento.preventDefault();
+        (submitRef.current as any).click();
+    };
+
     const regresarALogin = (_:React.MouseEvent<HTMLButtonElement>) : void => {
         router.push("/");
     };
 
     return (
         <>
-        <h1>Registrarse</h1>
-        <form onSubmit={alRegistrarse}>
-        <label htmlFor="usuario">Usuario: </label>
-            <input type="text" name="usuario" onChange={handleInputChange} placeholder="escriba su usuario aqui" />
-            <br />
-            <label htmlFor="passwd">Contraseña: </label>
-            <input type="password" name="passwd" onChange={handleInputChange} placeholder="escriba su contraseña aqui" />
-            <br />
-            <label htmlFor="nombre">Nombre completo: </label>
-            <input type="text" name="nombreCompleto" onChange={handleInputChange} placeholder="escriba su nombre completo aqui" />
-            <br />
-            <label htmlFor="edad">Edad: </label>
-            <input type="text" name="edad" onChange={handleInputChange} placeholder="escriba su edad" />
-            <br />
-            <label htmlFor="genero">Género: </label>
-            <input type="text" name="genero" onChange={handleInputChange} placeholder="escriba su género aqui" />
-            <br />
-            <input type="submit" value="Registrarse" />
-        </form>
-        <button onClick={regresarALogin}>Regresar a Login</button>
+        <Grid container justify="center">
+            <Grid item>
+                <form onSubmit={alRegistrarse} autoComplete="off">
+                    <h1>Registrarse</h1>
+                    <TextField type="text" name="usuario" onChange={handleInputChange} placeholder="escriba su usuario aqui" label="Usuario" required={true} />
+                    <br /><br />
+                    <TextField type="password" name="passwd" onChange={handleInputChange} placeholder="escriba su contraseña aqui" label="Contraseña" required={true} />
+                    <br /><br />
+                    <TextField type="text" name="nombreCompleto" onChange={handleInputChange} placeholder="escriba su nombre completo aqui" label="Nombre completo" required={true} />
+                    <br /><br />
+                    <TextField type="text" name="edad" onChange={handleInputChange} placeholder="escriba su edad" label="Edad" required={true} />
+                    <br /><br />
+                    <TextField type="text" name="genero" onChange={handleInputChange} placeholder="escriba su género aqui" label="Género" required={true} />
+                    <br /><br />
+                    <input type="submit" value="Registrarse" style={{ visibility: "hidden" }} ref={submitRef} />
+                </form>
+                <Button onClick={alPresionarRegistrarse} variant="contained" color="primary">Registrarse</Button>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <Button onClick={regresarALogin} variant="contained">Regresar a Login</Button>
+            </Grid>
+        </Grid>
         <ToastContainer />
         </>
     );

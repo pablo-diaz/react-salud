@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 
+import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
+
 import { PerfilPaciente, consultarPerfil } from "../../servicios/paciente/PacienteService";
 import Utils from "../../utils/Utils";
 
@@ -29,9 +32,8 @@ const Menu = (_:MenuProps): JSX.Element => {
         .catch(() => router.push("/"));
     }, []);
 
-    const handleClick = (evento: React.MouseEvent<HTMLButtonElement>): void => {
-        const paginaARedireccionar = (evento.target as HTMLButtonElement).name;
-        router.push(`/${paginaARedireccionar}`);
+    const irA = (paginaDestino: string): void => {
+        router.push(`/${paginaDestino}`);
     };
 
     const hacerLogOut = (evento: React.MouseEvent<HTMLButtonElement>): void => { 
@@ -40,15 +42,17 @@ const Menu = (_:MenuProps): JSX.Element => {
     };
 
     return cargando ? <div>Cargando ....</div> : (
-        <>
-        <h1>Este es el menu</h1>
-        <h2>Bienvenido { estado?.perfil.nombreCompleto }</h2>
-        <button name="perfil" onClick={handleClick}>Perfil</button>
-        <button name="enfermedades" onClick={handleClick}>Enfermedades</button>
-        <button name="consultasmedicas" onClick={handleClick}>Consultas Médicas</button>
-        <button name="planbienestar" onClick={handleClick}>Plan de Bienestar</button>
-        <button onClick={hacerLogOut}>Logout</button>
-        </>
+        <Grid container justify="center">
+            <Grid item>
+                <h1>Menú Principal</h1>
+                <h2>Bienvenido { estado?.perfil.nombreCompleto }</h2>
+                <Button onClick={() => irA("perfil")} variant="contained">Perfil</Button><br /><br />
+                <Button onClick={() => irA("enfermedades")} variant="contained">Enfermedades</Button><br /><br />
+                <Button onClick={() => irA("consultasmedicas")} variant="contained">Consultas Médicas</Button><br /><br />
+                <Button onClick={() => irA("planbienestar")} variant="contained">Plan de Bienestar</Button><br /><br />
+                <Button onClick={hacerLogOut} variant="contained" color="secondary">Logout</Button>
+            </Grid>
+        </Grid>
     );
 };
 

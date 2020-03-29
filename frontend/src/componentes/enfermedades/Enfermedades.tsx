@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+
 import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+
+import Grid from '@material-ui/core/Grid';
+import Button from '@material-ui/core/Button';
 
 import { Enfermedad,
     consultarEnfermedadesDelPaciente, 
@@ -86,13 +91,17 @@ const Enfermedades = (_:EnfermedadesParams): JSX.Element => {
 
     return cargando ? <div>Cargando ...</div> : (
         <>
-        { renderizarEnfermedades("Estas son las Enfermedades del Paciente", estado?.enfermedadesDelPaciente, quitarEnfermedadDePaciente) }
-        <br />
-        { renderizarEnfermedades("Estas son las Enfermedades Disponibles a asignar", estado?.enfermedadesDisponibles, agregarEnfermedadAPaciente) }
-        <br />
-        <button onClick={almacenar}>Almacenar Asignación de Enfermedades</button>
-        <br />
-        <button onClick={regresarAlMenu}>Regesar al Menu</button>
+        <Grid container >
+            <Grid item>
+                { renderizarEnfermedades("Estas son las Enfermedades del Paciente", estado?.enfermedadesDelPaciente, quitarEnfermedadDePaciente) }
+                <br />
+                { renderizarEnfermedades("Estas son las Enfermedades Disponibles a asignar", estado?.enfermedadesDisponibles, agregarEnfermedadAPaciente) }
+                <br />
+                <Button onClick={almacenar} variant="contained" color="primary">Almacenar Asignación de Enfermedades</Button>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <Button onClick={regresarAlMenu} variant="contained" color="secondary">Regesar al Menú</Button>
+            </Grid>
+        </Grid>
         <ToastContainer />
         </>
     );
