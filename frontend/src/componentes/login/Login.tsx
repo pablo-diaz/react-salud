@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { ToastContainer, toast } from "react-toastify";
 
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+
 import LoginService from "../../servicios/login/LoginService";
 import Utils from "../../utils/Utils";
 
@@ -40,8 +43,7 @@ const Login = (_: LoginProps): JSX.Element => {
         setEstado(obtenerEstadoParaPasswd(estado, evento.target.value));
     };
 
-    const alAutenticarse = (evento: React.FormEvent<HTMLFormElement>): void => {
-        evento.preventDefault();
+    const autenticarUsuario = () => {
         LoginService.realizarLogin({ usuario: estado.usuario, passwd: estado.passwd })
         .then(resultadoAutenticacion => {
             if(resultadoAutenticacion.exitosa) {
@@ -60,22 +62,31 @@ const Login = (_: LoginProps): JSX.Element => {
         });
     };
 
+    const alAutenticarse = (evento: React.MouseEvent<HTMLButtonElement>): void => {
+        evento.preventDefault();
+        autenticarUsuario();
+    };
+
+    const alHacerSubmit = (evento: React.FormEvent<HTMLFormElement>): void => {
+        evento.preventDefault();
+        autenticarUsuario();
+    };
+
     const alSolicitarRegistrarse = (_:React.MouseEvent<HTMLButtonElement>): void => {
         router.push("/registrarse");
     };
 
     return (
         <>
-        <form onSubmit={alAutenticarse}>
-            <label htmlFor="usuario">Usuario: </label>
-            <input type="text" onChange={alDigitarUsuario} placeholder="escriba su usuario aqui" />
-            <br />
-            <label htmlFor="passwd">Contraseña: </label>
-            <input type="password" onChange={alDigitarPasswd} placeholder="escriba su contraseña aqui" />
-            <br />
-            <input type="submit" value="Autenticarse" />
+        <form onSubmit={alHacerSubmit} autoComplete="off">
+            <TextField type="text" onChange={alDigitarUsuario} placeholder="escriba su usuario aqui" label="Usuario" required={true} />
+            <br /><br />
+            <TextField type="password" onChange={alDigitarPasswd} placeholder="escriba su contraseña aqui" label="Contraseña" required={true} />
+            <br /><br />
+            <input type="submit" value="Listo" style={{ visibility: "hidden" }} />
         </form>
-        <button onClick={alSolicitarRegistrarse}>Registrarse</button>
+        <Button onClick={alAutenticarse} variant="contained">Autenticarse</Button>
+        <Button onClick={alSolicitarRegistrarse} variant="contained">Registrarse</Button>
         <ToastContainer />
         </>
     );
