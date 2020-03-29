@@ -44,6 +44,14 @@ namespace API.Controllers
             return Ok(resultado);
         }
 
+        [HttpPost("agregarUsuario")]
+        public async Task<IActionResult> RegistrarUsuario([FromBody] InfoRegistroUsuario info)
+        {
+            var resultadoAgregarUsuario = await _seguridadService.AgregarUsuario(info.Usuario, info.Passwd, info.NombreCompleto, info.Edad, info.Genero);
+            if (resultadoAgregarUsuario.IsSuccess) return Ok("Exito");
+            return BadRequest(resultadoAgregarUsuario.Error);
+        }
+
         private string ObtenerJWTToken(int idUsuario)
         {
             var appSettingsSection = _configuration.GetSection("AppSettings");

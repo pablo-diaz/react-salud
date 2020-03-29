@@ -51,50 +51,47 @@ namespace API.Controllers
         }
 
         [HttpGet("enfermedadesDisponibles")]
-        public async Task<IEnumerable<Enfermedad>> ConsultarEnfermedadesDisponibles()
-        {
-            await Task.Delay(1000);
-            return Enumerable.Range(1, 10)
-                .Select(id => new Enfermedad { Id = id, Nombre = $"Enfermedad 0{id}" });
-        }
+        public async Task<IEnumerable<Enfermedad>> ConsultarEnfermedadesDisponibles() =>
+            await _pacienteService.ListarEnfermedadesDisponibles();
 
         [HttpGet("enfermedades")]
-        public async Task<IEnumerable<Enfermedad>> ConsultarEnfermedades()
+        public async Task<IActionResult> ConsultarEnfermedades()
         {
-            await Task.Delay(1000);
-            return (new int[] {1, 3, 6})
-                .Select(id => new Enfermedad { Id = id, Nombre = $"Enfermedad 0{id}" });
+            var maybeUserId = ObtenerIdUsuarioSolicitante();
+            if (!maybeUserId.HasValue)
+                return BadRequest();
+            return Ok(await _pacienteService.ListarEnfermedadesPaciente(maybeUserId.Value));
         }
 
         [HttpGet("citasMedicas")]
-        public async Task<IEnumerable<ConsultaMedica>> ConsultarConsultasMedicas()
+        public async Task<IActionResult> ConsultarConsultasMedicas()
         {
-            await Task.Delay(1000);
-            return Enumerable.Range(1, 4)
-                .Select(id => new ConsultaMedica { Sitio = $"Sitio 0{id}", Fecha = new DateTime(2020, 3, 15, 9, 45, 0) });
+            var maybeUserId = ObtenerIdUsuarioSolicitante();
+            if (!maybeUserId.HasValue)
+                return BadRequest();
+
+            return Ok(await _pacienteService.ListarConsultasMedicasPaciente(maybeUserId.Value));
         }
 
         [HttpGet("actividadesDisponibles")]
-        public async Task<IEnumerable<Actividad>> ConsultarActividadesDisponibles()
-        {
-            await Task.Delay(1000);
-            return Enumerable.Range(1, 10)
-                .Select(id => new Actividad { Id = id, Nombre = $"Actividad 0{id}" });
-        }
+        public Task<IEnumerable<Actividad>> ConsultarActividadesDisponibles() =>
+            Task.FromResult(Enumerable.Range(1, 10)
+                .Select(id => new Actividad { Id = id, Nombre = $"Actividad 0{id}" }));
 
         [HttpPost("enfermedades")]
         public async Task<IActionResult> AlmacenarEnfermedadesPaciente([FromBody] Enfermedad[] enfermedades)
         {
-            await Task.Delay(1000);
+            var maybeUserId = ObtenerIdUsuarioSolicitante();
+            if (!maybeUserId.HasValue)
+                return BadRequest();
+
+            await _pacienteService.AsignarEnfermedadesAPaciente(maybeUserId.Value, enfermedades.ToList());
             return Ok("Enfermedades almacenadas exitosamente");
         }
 
         [HttpPost("evaluarActividadesContraEnfermedades")]
-        public async Task<IEnumerable<Enfermedad>> EvaluarActividadesContraEnfermedades([FromBody] Actividad[] actividades)
-        {
-            await Task.Delay(1000);
-            return (new int[] { 1, 3, 6 })
-                .Select(id => new Enfermedad { Id = id, Nombre = $"Enfermedad 0{id}" });
-        }
+        public Task<IEnumerable<Enfermedad>> EvaluarActividadesContraEnfermedades([FromBody] Actividad[] actividades) =>
+            Task.FromResult((new int[] { 1, 3, 6 })
+                .Select(id => new Enfermedad { Id = id, Nombre = $"Enfermedad 0{id}" }));
     }
 }

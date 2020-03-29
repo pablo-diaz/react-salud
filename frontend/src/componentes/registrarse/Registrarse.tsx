@@ -9,11 +9,13 @@ type RegistrarseParams = {};
 type RegistrarseState = {
     usuario: string,
     passwd: string,
-    nombreCompleto: string
+    nombreCompleto: string,
+    edad: string,
+    genero: string
 };
 
 const obtenerEstadoPorDefecto = () : RegistrarseState => {
-    return { usuario: "", passwd: "", nombreCompleto: "" };
+    return { usuario: "", passwd: "", nombreCompleto: "", edad: "", genero: "" };
 };
 
 const obtenerEstadoParaAtributo = (estadoAnterior: RegistrarseState, atributo: string, valorAtributo: any) : RegistrarseState => {
@@ -42,13 +44,16 @@ const Registrarse = (_:RegistrarseParams): JSX.Element => {
 
     const alRegistrarse = (evento: React.FormEvent<HTMLFormElement>): void => {
         evento.preventDefault();
-        const resultadoRegistro = RegistrarseService.registrarse({ usuario: estado.usuario, passwd: estado.passwd, nombreCompleto: estado.nombreCompleto });
-        if(resultadoRegistro.exitosa) {
-            notificarExito(() => router.push("/"));
-        }
-        else {
-            notificarError(resultadoRegistro.errores as string[]);
-        }
+        RegistrarseService.registrarse({ usuario: estado.usuario, passwd: estado.passwd, nombreCompleto: estado.nombreCompleto, edad: parseInt(estado.edad), genero: estado.genero })
+        .then(resultadoRegistro => {
+            if(resultadoRegistro.exitosa) {
+                notificarExito(() => router.push("/"));
+            }
+            else {
+                notificarError(resultadoRegistro.errores as string[]);
+            }
+        })
+        .catch(razon => notificarError([razon]));
     };
 
     const regresarALogin = (_:React.MouseEvent<HTMLButtonElement>) : void => {
@@ -67,6 +72,12 @@ const Registrarse = (_:RegistrarseParams): JSX.Element => {
             <br />
             <label htmlFor="nombre">Nombre completo: </label>
             <input type="text" name="nombreCompleto" onChange={handleInputChange} placeholder="escriba su nombre completo aqui" />
+            <br />
+            <label htmlFor="edad">Edad: </label>
+            <input type="text" name="edad" onChange={handleInputChange} placeholder="escriba su edad" />
+            <br />
+            <label htmlFor="genero">Género: </label>
+            <input type="text" name="genero" onChange={handleInputChange} placeholder="escriba su género aqui" />
             <br />
             <input type="submit" value="Registrarse" />
         </form>

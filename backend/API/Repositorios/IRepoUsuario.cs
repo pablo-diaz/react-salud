@@ -8,5 +8,6 @@ namespace API.Repositorios
     {
         Task<Maybe<Usuario>> ObtenerUsuario(string userName);
         Task<Maybe<Usuario>> ObtenerUsuario(int id);
+        Task<Result<int>> AgregarUsuario(string usuario, string passwd);
     }
 }
