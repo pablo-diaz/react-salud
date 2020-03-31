@@ -1,0 +1,9 @@
+.titulo {
+    font-size: 14,
+}
+
+.papel {
+    min-width: 200px;
+    padding: 10px 10px 10px 10px !important;
+    margin: 10px 10px 10px 10px;
+}
