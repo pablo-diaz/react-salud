@@ -6,17 +6,13 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
-import GridList from '@material-ui/core/GridList';
-
-import './enfermedades.css';
 
 import { Enfermedad,
     consultarEnfermedadesDelPaciente, 
     consultarEnfermedadesDisponibles, 
     almacenarEnfermedadesPaciente } from "../../servicios/paciente/PacienteService";
 import Utils from "../../utils/Utils";
+import { Seleccionable, ItemAPintar } from "../shared/seleccionable/Seleccionable";
 
 type EnfermedadesParams = {};
 
@@ -32,32 +28,20 @@ const obtenerEstadoConEnfermedades = (estadoActual: EnfermedadesEstado | null, u
     return { ...estadoActual, usuario, enfermedadesDelPaciente: delPaciente, enfermedadesDisponibles: nuevasEnfermedadesDisponibles };
 };
 
-const renderizarEnfermedades = (titulo: string, enfermedades: Enfermedad[] | undefined | null, 
-        clickCallbackFn: (id: number) => void, textoBoton: string): JSX.Element => {
-    return (!enfermedades || enfermedades.length === 0) ? <div></div> : (
-        <>
-        <h1>{titulo}</h1>
-        <GridList cellHeight={40} cols={8} style={{ maxWidth: 700}}>
-        { enfermedades.map(enfermedad =>
-            <Paper key={`P_${enfermedad.id}`} elevation={3} className="papel">
-                <Typography className="titulo" color="textPrimary" gutterBottom={true} display="inline">
-                    { enfermedad.nombre }
-                </Typography>
-                &nbsp;&nbsp;&nbsp;
-                <Button variant="contained" color="default" size="small" onClick={() => clickCallbackFn(enfermedad.id)}>{textoBoton}</Button>
-            </Paper>
-        )}
-        </GridList>
-        </>
-    );
-};
-
 const notificarExito = (): void => {
     toast.success("Se han almacenado las enfermedades de este paciente exitosamente");
 };
 
 const notificarError = (errores: string[]): void => {
     errores.forEach(error => toast.error(error));
+};
+
+const mapearEnfermedadesAItems = (enfermedades: Enfermedad[] | undefined): ItemAPintar[] => {
+    if(enfermedades)
+        return enfermedades.map(enfermedad => { 
+            return {id: enfermedad.id, nombre: enfermedad.nombre }
+        });
+    return [];
 };
 
 const Enfermedades = (_:EnfermedadesParams): JSX.Element => {
@@ -106,9 +90,17 @@ const Enfermedades = (_:EnfermedadesParams): JSX.Element => {
         <>
         <Grid container >
             <Grid item>
-                { renderizarEnfermedades("Estas son las Enfermedades del Paciente", estado?.enfermedadesDelPaciente, quitarEnfermedadDePaciente, "Quitar") }
+                <Seleccionable
+                    titulo="Estas son las Enfermedades del Paciente" 
+                    items={ mapearEnfermedadesAItems(estado?.enfermedadesDelPaciente) }
+                    onItemClick={quitarEnfermedadDePaciente}
+                    textoBoton="Quitar" />
                 <br />
-                { renderizarEnfermedades("Estas son las Enfermedades Disponibles a asignar", estado?.enfermedadesDisponibles, agregarEnfermedadAPaciente, "Añadir") }
+                <Seleccionable
+                    titulo="Estas son las Enfermedades Disponibles a asignar" 
+                    items={ mapearEnfermedadesAItems(estado?.enfermedadesDisponibles) }
+                    onItemClick={agregarEnfermedadAPaciente}
+                    textoBoton="Añadir" />
                 <br />
                 <Button onClick={almacenar} variant="contained" color="primary">Almacenar Asignación de Enfermedades</Button>
                 &nbsp;&nbsp;&nbsp;&nbsp;

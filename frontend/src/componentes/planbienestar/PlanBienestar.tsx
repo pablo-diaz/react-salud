@@ -13,6 +13,8 @@ import { Actividad,
     Enfermedad} from "../../servicios/paciente/PacienteService";
 import Utils from "../../utils/Utils";
 
+import { Seleccionable, ItemAPintar } from "../shared/seleccionable/Seleccionable";
+
 type PlanBienestarParams = {};
 
 type PlanBienestarEstado = {
@@ -30,28 +32,20 @@ const obtenerEstadoConActividades = (estadoActual: PlanBienestarEstado | null,
     return { ...estadoActual, actividadesPaciente, actividadesDisponibles: nuevasActividadesDisponibles };
 };
 
-const renderizarActividades = (titulo: string, actividades: Actividad[], clickCallbackFn: (id: number) => void): JSX.Element => {
-    return (!actividades || actividades.length === 0) ? <div></div> : (
-        <>
-        <h1>{titulo}</h1>
-        <ul>
-            { actividades.map(actividad =>
-                <li key={`P_${actividad.id}`} onClick={() => clickCallbackFn(actividad.id)}>{ actividad.nombre }</li>) }
-        </ul>
-        </>
-    );
+const mapearEnfermedadesAItems = (enfermedades: Enfermedad[] | undefined): ItemAPintar[] => {
+    if(enfermedades)
+        return enfermedades.map(enfermedad => { 
+            return {id: enfermedad.id, nombre: enfermedad.nombre }
+        });
+    return [];
 };
 
-const renderizarEnfermedades = (titulo: string, enfermedades: Enfermedad[]): JSX.Element => {
-    return (!enfermedades || enfermedades.length === 0) ? <div></div> : (
-        <>
-        <h1>{titulo}</h1>
-        <ul>
-            { enfermedades.map(enfermedad =>
-                <li key={`P_${enfermedad.id}`}>{ enfermedad.nombre }</li>) }
-        </ul>
-        </>
-    );
+const mapearActividadesAItems = (actividades: Actividad[] | undefined): ItemAPintar[] => {
+    if(actividades)
+        return actividades.map(actividad => { 
+            return {id: actividad.id, nombre: actividad.nombre }
+        });
+    return [];
 };
 
 const notificarError = (errores: string[]): void => {
@@ -111,13 +105,23 @@ const PlanBienestar = (_:PlanBienestarParams): JSX.Element => {
         <>
         <Grid container>
             <Grid item>
-                { renderizarActividades("Actividades seleccionadas para el Paciente", estado.actividadesPaciente, quitarActividadDePaciente) }
+                <Seleccionable
+                    titulo="Actividades seleccionadas para el Paciente" 
+                    items={ mapearActividadesAItems(estado.actividadesPaciente) }
+                    onItemClick={quitarActividadDePaciente}
+                    textoBoton="Quitar" />
                 <br />
                 <Button onClick={alEvaluarActividades} variant="contained" color="primary">Evaluar Actividades</Button>
                 <br />
-                { renderizarEnfermedades("La siguientes son las posibles enfermedades, según las anteriores actividades", enfermedades) }
+                <Seleccionable
+                    titulo="La siguientes son las posibles enfermedades, según las anteriores actividades" 
+                    items={ mapearEnfermedadesAItems(enfermedades) } />
                 <br />
-                { renderizarActividades("Actividades disponibles para seleccionar", estado.actividadesDisponibles, agregarActividadPaciente) }
+                <Seleccionable
+                    titulo="Actividades disponibles para seleccionar" 
+                    items={ mapearActividadesAItems(estado.actividadesDisponibles) }
+                    onItemClick={agregarActividadPaciente}
+                    textoBoton="Agregar" />
                 <br />
                 <Button onClick={regresarAlMenu} variant="contained" color="secondary">Regesar al Menú</Button>
             </Grid>
